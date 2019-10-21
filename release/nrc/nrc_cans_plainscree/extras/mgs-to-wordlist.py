@@ -1,75 +1,103 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from collections import Counter
-
 import sys
+from collections import Counter
+from unicodedata import normalize
+from functools import partial
+
+# These are mostly mistakes in tagging:
+BANNED_LEMMATA = ['IC', 'V', 'N']
+DISALLOWED_LIST = [
+        'PUNCT', 'CLB', '^excl', 'Num', 'Lat', 'Err/Frag', '?', 'Art',
+        'Err/Orth',
+        'Code',
+        'Frag',
+        'Morph',
+        'Lemma',
+        # This one is a mistake: ignore
+        'wêpinam',
+        # This is also a mistake:
+        'AI',
+        # Mistake:
+        'PV/aya',
+        None]
+# Cnj is a typo, but whatever
+APPROVED_POS = ['V', 'N', 'Ipc', 'Pron', 'Cnj']
 
 
-# We'll be modifying the last item on the stack
-most_likely_analyses = []
-previous_lemma = None
-previous_lineno = None
+class Analysis:
+    def __init__(self, text):
+        full_analysis = [tag for tag in text.split('+') if tag.strip()]
+        lemma_pos = get_lemma_pos(full_analysis)
+        self.prefixes = full_analysis[:lemma_pos]
+        self.lemma = full_analysis[lemma_pos]
+        self.suffixes = full_analysis[lemma_pos + 1:]
 
-DISALLOWED_LIST = ['PUNCT', 'CLB', '^excl', 'Num', 'Lat', 'Err/Frag']
-APPROVED_POS = ['V', 'N', 'Ipc', 'Pron']
+    @property
+    def pos(self):
+        try:
+            return self.suffixes[0]
+        except IndexError:
+            return None
+
+    @property
+    def is_english(self):
+        return 'Eng' in self.suffixes
+
+
+    def __repr__(self):
+        return f"<Analysis lemma={self.lemma!r} pos={self.pos!r} prefixes={self.prefixes} suffixes={self.suffixes}>"
 
 class NoPosError(Exception):
     pass
 
 
-def get_pos(analysis):
-    for tag in analysis:
-        if tag.startswith(('PV/', 'Rdpl')):
+def get_lemma_pos(analysis):
+    for pos, tag in enumerate(analysis):
+        if tag.startswith(('PV/', 'Rdpl', '*Rdpl', '*PV/')):
             continue
-        return tag
+        return pos
     raise NoPosError(f"Could not determine pos of: {analysis}")
 
 
-with open("WolfartAhenakew_GS170515_170528cg.vrt", encoding="UTF-8") as mgs:
-    for lineno, line in enumerate(mgs):
-        if not line.startswith("\t"):
-            continue
+nfc = partial(normalize, 'NFC')
 
-        lemma, *analysis = line.split()
-        assert lemma.startswith('"') and lemma.endswith('"')
-        # Get rid of quotes
-        lemma = lemma[1:-1]
 
-        # Some things have no analysis (???)
-        if not analysis:
-            continue
+word_count = Counter()
+
+with open("ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt", encoding="UTF-8") as mgs:
+    for line in mgs:
+        line = line.strip()
 
         try:
-            pos = get_pos(analysis)
-        except NoPosError:
-            print(f"Error here on line {lineno}:", line)
-            raise
-
-        # remove English lemmata:
-        if 'Eng' in analysis:
+            count_string, wordform, *raw_analyses = line.split()
+        except ValueError:
+            # Malformed line... :/
             continue
 
-        if pos in DISALLOWED_LIST:
+        good_analyses = []
+        for text in raw_analyses:
+            try:
+                analysis = Analysis(text)
+            except NoPosError:
+                # A mistake, probably
+                continue
+
+            if analysis.lemma in BANNED_LEMMATA:
+                continue
+            if analysis.pos in DISALLOWED_LIST:
+                continue
+            if analysis.is_english:
+                continue
+            assert analysis.pos in APPROVED_POS, f"{line!r}: {analysis!r}"
+            good_analyses.append(analysis)
+
+        if not good_analyses:
             continue
 
-        assert pos in APPROVED_POS, f"{lineno}: \"{lemma}\" ({pos})"
+        word_count[nfc(wordform)] += int(count_string)
 
-        full_analysis = (lemma, *analysis)
-
-        if lemma == previous_lemma and lineno - 1 == previous_lineno:
-            competing_analyses = (full_analysis, most_likely_analyses[-1])
-            # This is one of several analyses. Choose the shortest.
-            most_likely_analyses[-1] = min(competing_analyses, key=len)
-        else:
-            most_likely_analyses.append(full_analysis)
-
-        previous_lemma = lemma
-        previous_lineno = lineno
-
-# TODO: analyze with hfstol
-
-word_count = Counter(most_likely_analyses)
 
 print("#word\tcount")
 for lemma, count in word_count.most_common():
