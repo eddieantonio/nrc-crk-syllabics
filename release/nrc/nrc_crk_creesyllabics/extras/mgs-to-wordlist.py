@@ -34,6 +34,8 @@ ALLOWED_POS = [
     "Pron",
 ]
 
+alphabet = 'êioaîôâ-ptkcshmnywlr'
+
 class Analysis:
     def __init__(self, text):
         if text.startswith("+") and "+" not in text[1:]:
@@ -122,7 +124,13 @@ def add_from_line(line):
     if not good_analyses:
         return
 
-    word_count[nfc(wordform)] += int(count_string)
+    wordform = nfc(wordform)
+
+    if not all(letter in alphabet for letter in wordform):
+        print(f"{wordform}: invalid character", file=sys.stderr)
+        return
+
+    word_count[wordform] += int(count_string)
 
 
 with open("ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt", encoding="UTF-8") as mgs:
