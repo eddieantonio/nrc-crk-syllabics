@@ -1,5 +1,8 @@
 PATH := $(PATH):./node_modules/.bin
 
+nrc_crk_syllabics.js: nrc_crk_syllabics.model.ts
+	kmlmc $< -o $@
+
 trie.json: sro-model.js ./extract-model-to-json.js
 	node ./extract-model-to-json.js $< > $@
 
