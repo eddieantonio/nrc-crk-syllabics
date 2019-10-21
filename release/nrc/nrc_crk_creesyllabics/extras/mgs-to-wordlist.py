@@ -143,4 +143,6 @@ with open("ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt", encoding="UTF-8")
 
 print("#word\tcount")
 for lemma, count in word_count.most_common():
+    if count <= 1:
+        break
     print(lemma, count, sep="\t")
