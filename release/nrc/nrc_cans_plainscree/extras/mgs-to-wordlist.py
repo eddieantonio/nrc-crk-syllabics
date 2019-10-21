@@ -7,32 +7,40 @@ from unicodedata import normalize
 from functools import partial
 
 # These are mostly mistakes in tagging:
-BANNED_LEMMATA = ['IC', 'V', 'N']
+BANNED_LEMMATA = ["IC", "V", "N"]
 DISALLOWED_LIST = [
-        'PUNCT', 'CLB', '^excl', 'Num', 'Lat', 'Err/Frag', '?', 'Art',
-        'Err/Orth',
-        'Code',
-        'Frag',
-        'Morph',
-        'Lemma',
-        # This one is a mistake: ignore
-        'wêpinam',
-        # This is also a mistake:
-        'AI',
-        # Mistake:
-        'PV/aya',
-        None]
+    "PUNCT",
+    "CLB",
+    "^excl",
+    "Num",
+    "Lat",
+    "Err/Frag",
+    "?",
+    "Art",
+    "Err/Orth",
+    "Code",
+    "Frag",
+    "Morph",
+    "Lemma",
+    # This one is a mistake: ignore
+    "wêpinam",
+    # This is also a mistake:
+    "AI",
+    # Mistake:
+    "PV/aya",
+    None,
+]
 # Cnj is a typo, but whatever
-APPROVED_POS = ['V', 'N', 'Ipc', 'Pron', 'Cnj']
+APPROVED_POS = ["V", "N", "Ipc", "Pron", "Cnj"]
 
 
 class Analysis:
     def __init__(self, text):
-        full_analysis = [tag for tag in text.split('+') if tag.strip()]
+        full_analysis = [tag for tag in text.split("+") if tag.strip()]
         lemma_pos = get_lemma_pos(full_analysis)
         self.prefixes = full_analysis[:lemma_pos]
         self.lemma = full_analysis[lemma_pos]
-        self.suffixes = full_analysis[lemma_pos + 1:]
+        self.suffixes = full_analysis[lemma_pos + 1 :]
 
     @property
     def pos(self):
@@ -43,11 +51,11 @@ class Analysis:
 
     @property
     def is_english(self):
-        return 'Eng' in self.suffixes
-
+        return "Eng" in self.suffixes
 
     def __repr__(self):
         return f"<Analysis lemma={self.lemma!r} pos={self.pos!r} prefixes={self.prefixes} suffixes={self.suffixes}>"
+
 
 class NoPosError(Exception):
     pass
@@ -55,13 +63,13 @@ class NoPosError(Exception):
 
 def get_lemma_pos(analysis):
     for pos, tag in enumerate(analysis):
-        if tag.startswith(('PV/', 'Rdpl', '*Rdpl', '*PV/')):
+        if tag.startswith(("PV/", "Rdpl", "*Rdpl", "*PV/")):
             continue
         return pos
     raise NoPosError(f"Could not determine pos of: {analysis}")
 
 
-nfc = partial(normalize, 'NFC')
+nfc = partial(normalize, "NFC")
 
 
 word_count = Counter()
