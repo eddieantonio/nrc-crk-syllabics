@@ -18,13 +18,16 @@ const models = {
 };
 
 
-let contents = fs.readFileSync('nrc_crk_cans.js', 'utf8');
+let filename = process.argv[2];
+
+let contents = fs.readFileSync(filename, 'utf8');
 let doit = new Function('LMLayerWorker', 'models', contents);
 
 doit(LMLayerWorker, models);
 console.log(JSON.stringify(dataStructure, (key, value) => {
+  // Convert content to syllabics.
   if (key === 'content') {
     return sro2syllabics(value);
   }
   return value;
-}, 2));
+}));
