@@ -27,14 +27,10 @@ VALID_POS = [
     "Code",
 ]
 
-ALLOWED_POS = [
-    "V",
-    "N",
-    "Ipc",
-    "Pron",
-]
+ALLOWED_POS = ["V", "N", "Ipc", "Pron"]
 
-alphabet = 'êioaîôâ-ptkcshmnywlr'
+alphabet = "êioaîôâ-ptkcshmnywlr"
+
 
 class Analysis:
     def __init__(self, text):
@@ -113,7 +109,7 @@ def add_from_line(line):
         if analysis.pos not in ALLOWED_POS:
             continue
 
-        if 'Prop' in analysis.suffixes:
+        if "Prop" in analysis.suffixes:
             continue
 
         if analysis.is_english:
