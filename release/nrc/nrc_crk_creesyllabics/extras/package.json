@@ -1,0 +1,16 @@
+{
+  "name": "extras",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@keymanapp/lexical-model-compiler": "^12.0.51",
+    "@keymanapp/lexical-model-types": "^12.0.101",
+    "cree-sro-syllabics": "^2019.10.9"
+  }
+}
