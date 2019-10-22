@@ -2,6 +2,7 @@ import '@keymanapp/lexical-model-types';
 
 const model = {
   format: 'custom-1.0',
-  sources: ['syllabics2sro.ts', 'custom-model.ts', 'FOOTER.ts']
+  sources: ['syllabics2sro.ts', 'custom-model.ts'],
+  rootClass: 'PlainsCreeSyllabicsModel',
 };
 export default model;
