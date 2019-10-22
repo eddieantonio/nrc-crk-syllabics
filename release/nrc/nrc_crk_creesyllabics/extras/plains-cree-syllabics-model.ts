@@ -2,11 +2,11 @@ import "@keymanapp/lexical-model-types";
 
 declare namespace models {
   export class TrieModel implements LexicalModel {
+    constructor(weights: object);
     configure(capabilities: Capabilities): Configuration;
     predict(transform: Transform, context: Context): ProbabilityMass<Suggestion>[];
     wordbreak(context: Context): string;
     punctuation?: LexicalModelPunctuation;
-    constructor(weights: object);
   }
 }
 
