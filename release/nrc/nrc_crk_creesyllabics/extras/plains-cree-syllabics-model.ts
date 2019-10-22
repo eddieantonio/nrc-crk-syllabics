@@ -24,10 +24,12 @@ class PlainsCreeSyllabicsModel implements LexicalModel {
   }
 
   predict(transform: Transform, context: Context): ProbabilityMass<Suggestion>[] {
-    throw new Error("Method not implemented.");
+    // TODO: stuff
+    return this._underlyingModel.predict(transform, context);
   }
 
   wordbreak(context: Context): string {
+    // TODO: other stuff
     return this._underlyingModel.wordbreak(context);
   }
 
