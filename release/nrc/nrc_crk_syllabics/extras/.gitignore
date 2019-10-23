@@ -2,10 +2,5 @@
 WolfartAhenakew_GS170515_170528cg.vrt
 ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt
 
-# Intermediate files
-wordlist.tsv
-sro-model.js
-trie.json
-
 # Node stuff
 node_modules/

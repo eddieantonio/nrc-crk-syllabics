@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-with open('trie.json') as triefile:
+import sys
+
+
+with open(sys.argv[1]) as triefile:
     json_text = triefile.read().strip()
 
 print(f"""
