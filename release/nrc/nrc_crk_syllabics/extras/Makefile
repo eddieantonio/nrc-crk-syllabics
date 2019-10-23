@@ -20,18 +20,27 @@
 #
 
 KMLMC = npx kmlmc
+KMLMP = npx kmlmp
 
-MODELID = nrc.crk.syllabics
+MODEL_ID = nrc.crk.syllabics
 
 # This is the file that is parsed to generated a wordlist.
 SRC = ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt
 
 # Yes, the destination is called source/...
 DEST = ../source
-
 BUILD = ../build
 
-$(BUILD)/$(MODELID).js: $(DEST)/$(MODELID).model.ts $(DEST)/create-trie-model.ts $(DEST)/plains-cree-syllabics-model.ts $(DEST)/syllabics2sro.ts $(BUILD)
+# This
+PACKAGE = $(BUILD)/$(MODEL_ID).model.kmp
+MODEL = $(BUILD)/$(MODEL_ID).model.js
+
+######### Rules ###########
+
+$(PACKAGE): ../source/nrc.crk.syllabics.model.kps $(MODEL)
+	$(KMLMP) $< -o $@
+	
+$(MODEL): $(DEST)/$(MODEL_ID).model.ts $(DEST)/create-trie-model.ts $(DEST)/plains-cree-syllabics-model.ts $(DEST)/syllabics2sro.ts $(BUILD)
 	$(KMLMC) $< -o $@
 
 $(DEST)/create-trie-model.ts: $(BUILD)/trie.json json-to-trie-model.py
