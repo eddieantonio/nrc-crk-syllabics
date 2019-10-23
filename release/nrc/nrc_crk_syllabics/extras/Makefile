@@ -11,12 +11,12 @@
 # How files are generated:
 #
 #  ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt
-#   -[ mgs-to-wordlist.py ]-> 		wordlist.txt
-#   -[ kmlmc ]-> 					sro-model.js 			(an SRO trie model)
-#   -[ extract-model-to-json.js ]-> trie.json 				(a trie data structure with SRO keys and syllabics values)
-#   -[ json-to-trie-model.js ]-> 	create-trie-model.ts 	(a trie model used internally in the custom model)
-#   -[ kmlmc ]-> 					nrc_crk_syllabics.js    (THE custom trie model!)
-#   -[ kmlmp ]-> 					nrc_crk_syllabics.kpm   (distributable package)
+#   -[ mgs-to-wordlist.py ]->        wordlist.txt
+#   -[ kmlmc ]->                     sro-model.js                 (an SRO trie model)
+#   -[ extract-model-to-json.js ]->  trie.json                    (a trie data structure with SRO keys and syllabics values)
+#   -[ json-to-trie-model.js ]->     create-trie-model.ts         (a trie model used internally in the custom model)
+#   -[ kmlmc ]->                     nrc_crk_syllabics.model.js   (THE custom trie model!)
+#   -[ kmlmp ]->                     nrc_crk_syllabics.model.kpm  (a distributable package -- share this one!)
 #
 
 KMLMC = npx kmlmc
@@ -64,9 +64,12 @@ node_modules: package.json
 
 # Phony rules:
 
+test: $(MODEL)
+	./test-model.py
+
 get-deps: node_modules
 
 clean:
 	$(RM) -r $(BUILD)
 
-.PHONY: clean get-deps
+.PHONY: clean get-deps test
