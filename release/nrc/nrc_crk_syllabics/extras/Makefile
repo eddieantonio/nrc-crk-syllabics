@@ -21,6 +21,8 @@
 
 KMLMC = npx kmlmc
 
+MODELID = nrc.crk.syllabics
+
 # This is the file that is parsed to generated a wordlist.
 SRC = ahenakew_wolfart_MGS_tab-sep-anls_freq-sorted.txt
 
@@ -29,7 +31,7 @@ DEST = ../source
 
 BUILD = ../build
 
-$(BUILD)/nrc_crk_syllabics.js: $(DEST)/nrc_crk_syllabics.model.ts $(DEST)/create-trie-model.ts $(DEST)/plains-cree-syllabics-model.ts $(DEST)/syllabics2sro.ts $(BUILD)
+$(BUILD)/$(MODELID).js: $(DEST)/$(MODELID).model.ts $(DEST)/create-trie-model.ts $(DEST)/plains-cree-syllabics-model.ts $(DEST)/syllabics2sro.ts $(BUILD)
 	$(KMLMC) $< -o $@
 
 $(DEST)/create-trie-model.ts: $(BUILD)/trie.json json-to-trie-model.py
@@ -56,6 +58,6 @@ node_modules: package.json
 get-deps: node_modules
 
 clean:
-	$(RM) $(BUILD)
+	$(RM) -r $(BUILD)
 
 .PHONY: clean get-deps
