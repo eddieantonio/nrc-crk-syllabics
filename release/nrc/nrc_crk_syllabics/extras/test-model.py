@@ -18,7 +18,7 @@ class TestModel(unittest.TestCase):
 
 def predict(text: str) -> dict:
     raw_output = check_output(['lmlayer-cli', '-f', MODEL_PATH, '-p', text])
-    return raw_output.split("\n")[0].split("\t")[1:]
+    return raw_output.decode('UTF-8').split("\n")[0].split("\t")[1:]
 
 if __name__ == '__main__':
     assert MODEL_PATH.exists(), MODEL_PATH

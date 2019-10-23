@@ -40,7 +40,7 @@ MODEL = $(BUILD)/$(MODEL_ID).model.js
 $(PACKAGE): ../source/nrc.crk.syllabics.model.kps $(MODEL)
 	$(KMLMP) $< -o $@
 	
-$(MODEL): $(DEST)/$(MODEL_ID).model.ts $(DEST)/create-trie-model.ts $(DEST)/plains-cree-syllabics-model.ts $(DEST)/syllabics2sro.ts $(BUILD)
+$(MODEL): $(DEST)/$(MODEL_ID).model.ts $(DEST)/create-trie-model.ts $(DEST)/hacks.ts $(DEST)/plains-cree-syllabics-model.ts $(DEST)/syllabics2sro.ts $(BUILD)
 	$(KMLMC) $< -o $@
 
 $(DEST)/create-trie-model.ts: $(BUILD)/trie.json json-to-trie-model.py
